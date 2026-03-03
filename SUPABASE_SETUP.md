@@ -1,6 +1,8 @@
 # 🚀 Supabase Kurulum Rehberi
 
-Bu proje artık **Supabase** kullanıyor. Docker ve local PostgreSQL yerine hem development hem production için Supabase ücretsiz tier'ını kullanıyoruz.
+Bu proje **Supabase** kullanıyor. Hem development hem production için Supabase ücretsiz tier'ını kullanıyoruz.
+
+**Repository:** https://github.com/muhammeteren01/newTurlagitsin-api
 
 ---
 
@@ -29,7 +31,7 @@ Bu proje artık **Supabase** kullanıyor. Docker ve local PostgreSQL yerine hem 
    - **Organization:** Kendi organizasyonunu seç veya yeni oluştur
    - **Name:** `turlagitsin-api` (veya istediğin isim)
    - **Database Password:** Güçlü bir şifre belirle (**bunu kaydet!**)
-   - **Region:** `Frankfurt (eu-central-1)` (Render ile aynı)
+   - **Region:** `Frankfurt (eu-central-1)` (Avrupa için önerilen)
    - **Pricing Plan:** Free (varsayılan)
 5. **Create new project** butonuna tıkla
 6. 1-2 dakika bekle, proje hazırlanıyor...
@@ -88,16 +90,28 @@ Kalıcı olarak ayarlamak için (Windows):
 
 ---
 
-## 🌐 Adım 4: Production Ortamı (Render)
+## 🌐 Adım 4: Production Ortamı (Deployment)
 
-1. [Render Dashboard](https://dashboard.render.com) a git
-2. `bitur-app` servisini seç
-3. **Environment** sekmesine tıkla
-4. **Add Environment Variable** butonuna tıkla:
+**Not:** Bu proje CI/CD pipeline'ı içermemektedir. Deployment manuel olarak yapılır.
+
+### Deployment platformunda (örn: Azure, AWS, IIS):
+
+1. Projeyi production için build et:
+   ```powershell
+   dotnet publish -c Release -o ./publish
+   ```
+
+2. Environment variable'ı ayarla:
    - **Key:** `DATABASE_URL`
    - **Value:** Supabase connection string'ini yapıştır
-5. **Save Changes** butonuna tıkla
-6. Render otomatik olarak yeniden deploy edecek
+
+3. Sunucuda uygulamayı çalıştır:
+   ```powershell
+   cd publish
+   dotnet Api.dll
+   ```
+
+**CI/CD eklemek isterseniz:** GitHub Actions, Azure DevOps veya GitLab CI/CD kullanabilirsiniz.
 
 ---
 
@@ -197,8 +211,9 @@ dotnet ef migrations remove
    - Supabase Dashboard > Authentication > Policies
    - Tablolarınıza erişim kuralları ekleyin
 
-4. **JWT Secret'ları değiştir**
-   - Render'da `JWT_KEY` environment variable'ı zaten otomatik oluşuyor
+4. **JWT Secret'ları koruyun**
+   - `JWT_KEY` environment variable'ını güvenli bir şekilde ayarlayın
+   - Production'da mutlaka environment variable kullanın
 
 ---
 
@@ -247,11 +262,11 @@ Free tier'da maksimum 60 bağlantı var. Connection pool ayarlarını azaltın:
 | Servis | Free Tier | 5000 Kullanıcı Desteği | Limit |
 |--------|-----------|------------------------|-------|
 | **Supabase** | ✅ Ücretsiz | ✅ Evet | 500MB DB, 50k auth/ay |
-| Render PostgreSQL | ❌ 90 gün sonra durur | ⚠️ $7/ay | 1GB |
-| Azure SQL | ✅ Ücretsiz | ⚠️ Karmaşık | 100k vCore sn/ay |
 | PlanetScale | ✅ Ücretsiz | ✅ Evet | 5GB, 1B satır/ay |
+| Azure SQL | ✅ Ücretsiz | ⚠️ Karmaşık | 100k vCore sn/ay |
+| AWS RDS | ❌ Ücretli | - | $15+/ay |
 
-**Kazanç: $7/ay = 200₺/ay**
+**Supabase önerilir:** Tamamen ücretsiz, kolay kurulum, güçlü özellikler
 
 ---
 
@@ -263,21 +278,37 @@ Free tier'da maksimum 60 bağlantı var. Connection pool ayarlarını azaltın:
 
 ---
 
-## ✨ Önceki Yapılandırma (Docker)
+## 🚀 Deployment
 
-Eski Docker tabanlı yapılandırmaya dönmek isterseniz:
+### GitHub Repository
+```bash
+git clone https://github.com/muhammeteren01/newTurlagitsin-api.git
+cd newTurlagitsin-api
+```
 
-1. `docker-compose.yml` dosyasındaki comment'ları kaldırın
-2. `appsettings.Development.json` dosyasını eski haline döndürün
-3. `docker-compose up -d` komutunu çalıştırın
+### Development için Çalıştırma
 
-Ancak **Supabase kullanımı önerilir** çünkü:
-- Ücretsiz
-- Daha hızlı
-- Otomatik backup
-- Production ile aynı ortam
-- SSL/TLS şifreleme
-- Monitoring ve dashboard
+```bash
+cd src/Api
+dotnet restore
+dotnet run
+```
+
+### Production için Build ve Deploy
+
+```bash
+# Build
+dotnet publish -c Release -o ./publish
+
+# Environment variable ayarla (Windows)
+$env:DATABASE_URL = "your-supabase-connection-string"
+
+# Çalıştır
+cd publish
+dotnet Api.dll
+```
+
+**Not:** CI/CD pipeline henüz eklenmemiştir. İsteğe göre GitHub Actions, Azure DevOps veya GitLab CI/CD ekleyebilirsiniz.
 
 ---
 
