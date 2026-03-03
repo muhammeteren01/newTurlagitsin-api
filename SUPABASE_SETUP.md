@@ -2,7 +2,7 @@
 
 Bu proje **Supabase** kullanıyor. Hem development hem production için Supabase ücretsiz tier'ını kullanıyoruz.
 
-**Repository:** https://github.com/muhammeteren01/newTurlagitsin-api
+**Repository:** https://github.com/muhammeteren01/turlagitsin-api
 
 ---
 
@@ -282,8 +282,8 @@ Free tier'da maksimum 60 bağlantı var. Connection pool ayarlarını azaltın:
 
 ### GitHub Repository
 ```bash
-git clone https://github.com/muhammeteren01/newTurlagitsin-api.git
-cd newTurlagitsin-api
+git clone https://github.com/muhammeteren01/turlagitsin-api.git
+cd turlagitsin-api
 ```
 
 ### Development için Çalıştırma
